@@ -1,4 +1,4 @@
-;; test/cp_test.cljs -- build the command and compare it with the system cp
+;; test/cp_test.cljk -- build the command and compare it with the system cp
 ;; on stdout, stderr, exit status AND the resulting directory tree.
 ;;
 ;; A copy tool that printed nothing and exited 0 would pass an output-only
