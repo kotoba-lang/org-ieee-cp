@@ -168,7 +168,11 @@
 
 (when-not amu-home (refuse "set AMU_HOME to an amu checkout"))
 (let [amu (.join path amu-home "bin" "amu")
-      packager (.join path amu-home "scripts" "package-command.cljs")]
+      ;; `.cljk`, run through amu's own kbb: the `.cljs` spelling this named
+      ;; until 2026-09-15 no longer exists (the cljk rename), so the suite
+      ;; could not have run since.
+      packager (.join path amu-home "scripts" "package-command.cljk")
+      kbb (.join path amu-home "bin" "kbb")]
   (when-not (.existsSync fs amu) (refuse (str "no amu at " amu)))
   (when-not (.existsSync fs packager) (refuse (str "no packager at " packager)))
   (when-not (.existsSync fs system-cp) (refuse (str "no " system-cp " to compare against")))
@@ -192,7 +196,7 @@
           offset (second (re-find #":offset (\d+)" report))]
       (when-not offset (refuse (str "no :offset in the extract report: " report)))
       (let [real (.realpathSync fs data)
-            p (run "nbb" [packager "--code" blob "--offset" offset "--isa" "aarch64"
+            p (run "node" [kbb "--backend" "sci" packager "--code" blob "--offset" offset "--isa" "aarch64"
                           "--allow" "34,35,38,39"
                           "--fs-scope" real "--browse-scope" real
                           "--string-pool" "8000000" "--fuel" "50000000"
